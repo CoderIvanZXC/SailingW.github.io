@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SailingW — Звёзды как цифровой актив в Telegram</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;600;700&family=Clash+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-space: #0a0a12;
+            --bg-deep: #000013;
+            --text-light: #f0f0ff;
+            --text-gold: #e6d8a5;
+            --accent-blue: #4a80f0;
+            --accent-purple: #9a6aff;
+            --accent-green: #6aeb8e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist', sans-serif;
+            background: radial-gradient(ellipse at bottom, var(--bg-deep) 0%, var(--bg-space) 100%);
+            color: var(--text-light);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        /* Анимированные звёзды */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: 0;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Основные стили */
+        header {
+            padding: 2rem 0;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: 'Clash Display', sans-serif;
+            font-weight: 700;
+            font-size: 3rem;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .tagline {
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            color: var(--accent-purple);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero-секция */
+        .hero {
+            text-align: center;
+            padding: 6rem 0 4rem;
+            position: relative;
+        }
+
+        .hero h2 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: rgba(240, 240, 255, 0.9);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            margin-top: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(74, 128, 240, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(74, 128, 240, 0.5);
+        }
+
+        /* Аватарка ежа */
+        .hedgehog-avatar {
+            width: 140px;
+            height: 140px;
+            margin: 3rem auto;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(154, 106, 255, 0.5);
+            overflow: hidden;
+        }
+
+        .hedgehog-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Таблица цен */
+        .pricing {
+            background: rgba(20, 20, 40, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            margin: 3rem auto;
+            max-width: 800px;
+        }
+
+        .pricing h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--accent-green);
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .price-item {
+            background: rgba(30, 30, 60, 0.6);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(74, 128, 240, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .price-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+        }
+
+        .stars-count {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.8rem;
+            color: var(--text-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        /* Секция отзывов */
+        .reviews {
+            text-align: center;
+            margin: 5rem auto;
+        }
+
+        .reviews h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--accent-purple);
+        }
+
+        .review-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .review-card {
+            background: rgba(30, 30, 60, 0.6);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(74, 128, 240, 0.2);
+            text-align: left;
+            transition: transform 0.3s;
+        }
+
+        .review-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+        }
+
+        .review-author {
+            font-weight: 700;
+            color: var(--text-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .review-text {
+            opacity: 0.9;
+        }
+
+        .cta-outline {
+            background: transparent !important;
+            border: 2px solid var(--accent-purple) !important;
+            color: var(--text-light) !important;
+        }
+
+        .cta-outline:hover {
+            background: var(--accent-purple) !important;
+        }
+
+        /* 3D банковская карта */
+        #card-container {
+            width: 400px;
+            height: 250px;
+            margin: 3rem auto;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        #credit-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            transform: rotateY(15deg);
+        }
+
+        #credit-card:hover {
+            transform: rotateY(30deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #2a2a72, #009ffd);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-logo {
+            text-align: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .card-number {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .pay-button {
+            background: white;
+            color: #2a2a72;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .pay-button:hover {
+            background: #e6d8a5;
+            transform: translateY(-3px);
+        }
+
+        /* Таймер оплаты */
+        #payment-timer {
+            display: none;
+            text-align: center;
+            margin: 2rem auto;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+        }
+
+        #timer {
+            font-weight: bold;
+            color: var(--text-gold);
+        }
+
+        /* Футер */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        footer p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .logo { font-size: 2.2rem; }
+            .hero h2 { font-size: 2.5rem; }
+            .hero { padding: 4rem 0; }
+            .price-grid { grid-template-columns: 1fr; }
+            #card-container {
+                width: 320px;
+                height: 200px;
+            }
+            .card-number {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Анимированные звёзды -->
+    <div class="stars" id="stars"></div>
+
+    <header>
+        <div class="container">
+            <div class="logo">SailingW</div>
+            <div class="tagline">Digital stars in Telegram</div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h2>Звёзды как цифровой актив</h2>
+            <p>Покупайте, накапливайте и обменивайте звёзды в Telegram. Это новый формат цифровых активов с растущей ценностью.</p>
+            <a href="https://t.me/terryWX" class="cta-button">
+                <i class="fab fa-telegram"></i> Начать покупку
+            </a>
+        </div>
+    </section>
+
+    <!-- Аватарка ежа -->
+    <div class="hedgehog-avatar">
+        <img src="image.png" alt="SailingW Hedgehog" />
+    </div>
+
+    <!-- Таблица цен -->
+    <section class="container">
+        <div class="pricing">
+            <h3>Курс звёзд</h3>
+            <div class="price-grid">
+                <div class="price-item">
+                    <div class="stars-count">50 звёзд</div>
+                    <div class="price">36 грн</div>
+                </div>
+                <div class="price-item">
+                    <div class="stars-count">100 звёзд</div>
+                    <div class="price">68 грн</div>
+                </div>
+                <div class="price-item">
+                    <div class="stars-count">200 звёзд</div>
+                    <div class="price">136 грн</div>
+                </div>
+                <div class="price-item">
+                    <div class="stars-count">400 звёзд</div>
+                    <div class="price">276 грн</div>
+                </div>
+                <div class="price-item">
+                    <div class="stars-count">500 звёзд</div>
+                    <div class="price">340 грн</div>
+                </div>
+                <div class="price-item">
+                    <div class="stars-count">1000 звёзд</div>
+                    <div class="price">680 грн</div>
+                </div>
+                <div class="price-item">
+                    <div class="stars-count">2000 звёзд</div>
+                    <div class="price">1360 грн</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D банковская карта -->
+    <section class="container">
+        <div id="card-container">
+            <div id="credit-card">
+                <div class="card-face">
+                    <div class="card-logo">VISA</div>
+                    <div class="card-number">5168 7520 2944 5544</div>
+                    <div class="card-details">
+                        <div>SAILINGW</div>
+                        <div>12/25</div>
+                    </div>
+                    <button class="pay-button" id="pay-button">ОПЛАТИТЬ</button>
+                </div>
+            </div>
+        </div>
+        <div id="payment-timer">
+            <p>У вас есть <span id="timer">03:00</span> для оплаты</p>
+            <p>Переведите нужную сумму на карту (5168 7520 2944 5544) и отправьте скриншот в <a href="https://t.me/terryWX" style="color: var(--accent-blue);">@SailingW</a></p>
+        </div>
+    </section>
+
+    <!-- Секция отзывов -->
+    <section class="container">
+        <div class="reviews">
+            <h3>Отзывы</h3>
+            <div class="review-grid">
+                <div class="review-card">
+                    <div class="review-author">Sonik</div>
+                    <div class="review-text">Спасибо броу</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-author">Solo</div>
+                    <div class="review-text">Уже больше 1000 взял все ахуенно</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-author">Den</div>
+                    <div class="review-text">Пошёл на доверие и он не обманул</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-author">Devolpic | OXGN</div>
+                    <div class="review-text">Пошел на доверие, не обманул, советую! @SailingW</div>
+                </div>
+            </div>
+            <a href="https://t.me/+suyKMW4Tj9o2MDMy" class="cta-button cta-outline">
+                <i class="fab fa-telegram"></i> Больше отзывов в Telegram
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 SailingW. Цифровые звёзды — это актив для Telegram.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Создание анимированных звёзд
+        const starsContainer = document.getElementById('stars');
+        const starCount = 150;
+
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            
+            const size = Math.random() * 2 + 1;
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            const duration = Math.random() * 5 + 3 + 's';
+            const delay = Math.random() * 5 + 's';
+            
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${x}%`;
+            star.style.top = `${y}%`;
+            star.style.setProperty('--duration', duration);
+            star.style.animationDelay = delay;
+            
+            starsContainer.appendChild(star);
+        }
+
+        // Анимация 3D-карты
+        document.addEventListener('mousemove', (e) => {
+            const card = document.getElementById('credit-card');
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        // Таймер оплаты
+        const payButton = document.getElementById('pay-button');
+        const paymentTimer = document.getElementById('payment-timer');
+        
+        payButton.addEventListener('click', () => {
+            paymentTimer.style.display = 'block';
+            let minutes = 3;
+            let seconds = 0;
+            
+            const timer = setInterval(() => {
+                if (seconds === 0) {
+                    if (minutes === 0) {
+                        clearInterval(timer);
+                        paymentTimer.innerHTML = '<p style="color: #ff6b6b;">Время оплаты истекло!</p>';
+                        return;
+                    }
+                    minutes--;
+                    seconds = 59;
+                } else {
+                    seconds--;
+                }
+                
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
